@@ -1,22 +1,88 @@
+let currentPage = 1;
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+const searchbar = document.getElementById('search');
+currentPage == 1
+  ? (prev.style.visibility = 'hidden')
+  : (prev.style.visibility = '');
+//! tombol prev diklik
+prev.onclick = () => {
+  currentPage--;
+  // jika current page 0 maka ga boleh
+  if (currentPage == 0) {
+    currentPage = 1;
+  }
+  // jika current page 1 hidden prev
+  currentPage == 1
+    ? (prev.style.visibility = 'hidden')
+    : (prev.style.visibility = '');
+  // jika search bar ga ada valuenya
+  search_term = searchbar.value.toLowerCase();
+  if (search_term != '') {
+    return false;
+  }
+  // get data
+  fetch(
+    discover +
+      new URLSearchParams({
+        api_key: api_key,
+        sort_by: 'popularity.desc',
+        page: currentPage,
+      })
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      makeElement(data);
+    });
+};
+
+//! tombol next di klik
+next.onclick = () => {
+  currentPage++;
+  search_term = searchbar.value.toLowerCase();
+  if (search_term != '') {
+    return false;
+  }
+  currentPage > 1
+    ? (prev.style.visibility = '')
+    : (prev.style.visibility = 'hidden');
+
+  fetch(
+    discover +
+      new URLSearchParams({
+        api_key: api_key,
+        sort_by: 'popularity.desc',
+        page: currentPage,
+      })
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      makeElement(data);
+    });
+};
+
+// ambil data
 fetch(
   discover +
     new URLSearchParams({
       api_key: api_key,
       sort_by: 'popularity.desc',
-      page: 1,
+      page: currentPage,
     })
 )
   .then((res) => res.json())
   .then((data) => {
     console.log(data);
     makeElement(data);
-    makePagination(data.page, data.total_pages);
-  })
+  });
 
-const searchbar = document.getElementById('search');
-
+// masuk ke search filed
+// saat search bar di ketik/keyup
 searchbar.addEventListener('keyup', (event) => {
   search_term = event.target.value.toLowerCase();
+  // menghendel jika search bar kosong
   if (search_term == '') {
     fetch(
       discover +
@@ -46,9 +112,9 @@ searchbar.addEventListener('keyup', (event) => {
   }
 });
 
+// membuat card film
 const makeElement = (data) => {
   const main = document.querySelector('main');
-  console.log(data);
   main.innerHTML = '';
   data.results.forEach((item, i) => {
     // apr 06, 2022
@@ -83,31 +149,4 @@ const makeElement = (data) => {
     </div>
     `;
   });
-};
-
-let makePagination = (page, totalPage) => {
-  const pagination = document.getElementsByClassName('pagination')[0];
-  console.log(page);
-  console.log(totalPage);
-
-  console.log(pagination);
-
-  pagination.innerHTML = `
-  <a href="#" id="prev">&laquo;</a>
-  <a href="#" id="next">&raquo;</a>
-  `;
-  // <a href="#">1</a>
-  // <a class="active" href="#">2</a>
-  // <a href="#">3</a>
-  // <a href="#">4</a>
-  // <a href="#">5</a>
-  // <a href="#">6</a>
-
-  // const prev = document.getElementById('prev');
-  // const next = document.getElementById('next');
-  // console.log(prev);
-  // console.log(next);
-  // if (page < 2) {
-  //   prev.style.visibility = 'hidden';
-  // }
 };
