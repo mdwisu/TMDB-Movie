@@ -10,7 +10,8 @@ fetch(
   .then((data) => {
     console.log(data);
     makeElement(data);
-  });
+    makePagination(data.page, data.total_pages);
+  })
 
 const searchbar = document.getElementById('search');
 
@@ -82,4 +83,31 @@ const makeElement = (data) => {
     </div>
     `;
   });
+};
+
+let makePagination = (page, totalPage) => {
+  const pagination = document.getElementsByClassName('pagination')[0];
+  console.log(page);
+  console.log(totalPage);
+
+  console.log(pagination);
+
+  pagination.innerHTML = `
+  <a href="#" id="prev">&laquo;</a>
+  <a href="#" id="next">&raquo;</a>
+  `;
+  // <a href="#">1</a>
+  // <a class="active" href="#">2</a>
+  // <a href="#">3</a>
+  // <a href="#">4</a>
+  // <a href="#">5</a>
+  // <a href="#">6</a>
+
+  // const prev = document.getElementById('prev');
+  // const next = document.getElementById('next');
+  // console.log(prev);
+  // console.log(next);
+  // if (page < 2) {
+  //   prev.style.visibility = 'hidden';
+  // }
 };
